@@ -39,27 +39,14 @@ class OrdersDAOTest {
     OrdersDAOTest() throws SQLException, IOException {
     }
 
-//    @BeforeAll
-//    public static void setUp() {
-//        ordersDAO.deleteAll();
-//        for (int i = 0; i < 3; i++) {
-//            ordersDAO.save(buildOrder());
-//        }
-//    }
-
-    @Test
-    public void notEmptyTableBeforeTestExecution() {
-        int recordsInDB = ordersDAO.getAllRecordsCount();
-        System.out.println(recordsInDB);
-        Assertions.assertTrue(recordsInDB > 0, "The table is empty");
-    }
-
-    @Test
-    public void failTheTestIfTableIsEmpty() {
+    @BeforeAll
+    public static void setUp() {
         ordersDAO.deleteAll();
-        int recordsInDB = ordersDAO.getAllRecordsCount();
-        Assertions.assertThrows(NullPointerException.class, (Executable) ordersDAO.getAllRecords());
+        for (int i = 0; i < 3; i++) {
+            ordersDAO.save(buildOrder());
+        }
     }
+
 
     @Test
     public void ordersWithAllMandatoryFields() {
@@ -130,6 +117,20 @@ class OrdersDAOTest {
         }
     }
 
+    @Test
+    public void notEmptyTableBeforeTestExecution() {
+        int recordsInDB = ordersDAO.getAllRecordsCount();
+        System.out.println(recordsInDB);
+        Assertions.assertTrue(recordsInDB > 0, "The table is empty");
+    }
+
+    @Test
+    public void failTheTestIfTableIsEmpty() {
+        ordersDAO.deleteAll();
+        int recordsInDB = ordersDAO.getAllRecordsCount();
+        Assertions.assertThrows(NullPointerException.class, (Executable) ordersDAO.getAllRecords());
+    }
+
     private Orders createAndSaveOrderWithoutMandatoryFields() {
         Orders order = Orders.builder()
                 .order_id(null)
@@ -145,7 +146,7 @@ class OrdersDAOTest {
     private static Orders buildOrder() {
         Faker faker = new Faker();
         Orders order = Orders.builder()
-                .order_id(faker.number().numberBetween(6L, 10L))
+                .order_id(faker.number().numberBetween(6L, 1000L))
                 .customer_id(faker.number().numberBetween(1L, 5L))
                 .is_order_completed(faker.random().nextBoolean())
                 .is_order_payed(faker.random().nextBoolean())

@@ -1,5 +1,4 @@
 package daoService.DAOimpl;
-
 import com.github.javafaker.Faker;
 import com.github.javafaker.service.FakeValuesService;
 import com.github.javafaker.service.RandomService;
@@ -8,14 +7,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
-
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class CustomerDAOTest {
@@ -34,30 +31,15 @@ class CustomerDAOTest {
     CustomerDAOTest() throws SQLException, IOException {
     }
 
-//    @BeforeAll
-//    public static void setUp() {
-//        customerDAO.deleteAll();
-//        for (int i = 0; i < 3; i++) {
-//            customerDAO.save(buildCustomer());
-//        }
-//    }
-
-    @Test
-    public void notEmptyTableBeforeTestExecution() {
-        int recordsInDB = customerDAO.getAllRecordsCount();
-        System.out.println(recordsInDB);
-        Assertions.assertTrue(recordsInDB > 0, "The table is empty");
-    }
-
-    @Test
-    public void failTheTestIfTableIsEmpty() {
+    @BeforeAll
+    public static void setUp() {
         customerDAO.deleteAll();
-        int recordsInDB = customerDAO.getAllRecordsCount();
-        Assertions.assertThrows(NullPointerException.class, (Executable) customerDAO.getAllRecords());
+        for (int i = 0; i < 5; i++) {
+            customerDAO.save(buildCustomer());
+        }
     }
 
-
-    @Test
+      @Test
     public void noCustomersWithoutAddress() {
         customerDAO.getAllRecords()
                 .stream()
@@ -125,6 +107,21 @@ class CustomerDAOTest {
         }
     }
 
+    @Test
+    public void notEmptyTableBeforeTestExecution() {
+        int recordsInDB = customerDAO.getAllRecordsCount();
+        System.out.println(recordsInDB);
+        Assertions.assertTrue(recordsInDB > 0, "The table is empty");
+    }
+
+    @Test
+    public void failTheTestIfTableIsEmpty() {
+        customerDAO.deleteAll();
+        int recordsInDB = customerDAO.getAllRecordsCount();
+        Assertions.assertThrows(NullPointerException.class, (Executable) customerDAO.getAllRecords());
+    }
+
+
     private Customer createCustomerWithoutMandatoryFields() throws NullPointerException {
         Faker faker = new Faker();
         Customer customer = Customer.builder()
@@ -157,7 +154,7 @@ class CustomerDAOTest {
         FakeValuesService fakeValuesService = new FakeValuesService(new Locale("en-GB"), new RandomService());
 
         Customer customer = Customer.builder()
-                .customer_id(faker.number().numberBetween(5L, 10L))
+                .customer_id(faker.number().numberBetween(1L, 1000L))
                 .name(faker.name().firstName())
                 .email(fakeValuesService.bothify("????##@gmail.com"))
                 .phone(faker.numerify("############"))

@@ -34,13 +34,13 @@ class ProductDAOTest {
     ProductDAOTest() throws SQLException, IOException {
     }
 
-//    @BeforeAll
-//    public static void setUp() {
-//        productDAO.deleteAll();
-//        for (int i = 0; i < 3; i++) {
-//            productDAO.save(productBuilder());
-//        }
-//    }
+    @BeforeAll
+    public static void setUp() {
+        productDAO.deleteAll();
+        for (int i = 0; i < 3; i++) {
+            productDAO.save(productBuilder());
+        }
+    }
 
     @Test
     public void randomOrdersWithProductsAllMandatoryFieldsFilled() {
@@ -60,7 +60,6 @@ class ProductDAOTest {
         }
     }
 
-
     @Test
     public void createAndSaveProductSuccessfullyAndNotPresentInAnyOrderAsJustCreated() {
         Product productForSave = productBuilder();
@@ -76,14 +75,12 @@ class ProductDAOTest {
         assertEquals(productForSave.is_product_in_stock(), productFromDB.is_product_in_stock());
         assertEquals(productForSave.getWarehouse(), productFromDB.getWarehouse());
 
-
         for (Orders order : ordersDAO.getAllRecords()) {
             Long order_id = order.getOrder_id();
             Product productByOrderId = productDAO.getProductByOrderId(order_id);
             Assertions.assertNotEquals(productByOrderId.getProduct_id(), productFromDB.getProduct_id(), "There is Order with product, just created");
         }
     }
-
 
     @Test
     public void cannotCreateAndSaveOrderWithoutMandatoryFields() {
@@ -94,7 +91,6 @@ class ProductDAOTest {
             Assertions.assertTrue(e.getClass().equals(NullPointerException.class));
         }
     }
-
 
     @Test
     public void notEmptyTableBeforeTestExecution() {
@@ -109,7 +105,6 @@ class ProductDAOTest {
         int recordsInDB = ordersDAO.getAllRecordsCount();
         Assertions.assertThrows(NullPointerException.class, (Executable) ordersDAO.getAllRecords());
     }
-
 
     private Product createAndSaveWithoutMandatoryFields() {
         Product product = Product.builder()
@@ -128,7 +123,7 @@ class ProductDAOTest {
     private static Product productBuilder() {
         Faker faker = new Faker();
         Product product = Product.builder()
-                .product_id(faker.number().numberBetween(21L, 30L))
+                .product_id(faker.number().numberBetween(21L, 3000L))
                 .product_name(faker.food().ingredient())
                 .available_quantity(faker.number().randomDigit())
                 .product_type("food")

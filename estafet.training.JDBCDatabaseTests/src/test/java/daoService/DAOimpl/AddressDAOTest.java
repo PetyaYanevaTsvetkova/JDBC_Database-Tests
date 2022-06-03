@@ -29,31 +29,17 @@ class AddressDAOTest {
     AddressDAOTest() throws SQLException, IOException {
     }
 
-//    @BeforeAll
-//    public static void setUp() {
-//        addressDAO.deleteAll();
-//        for (int i = 0; i < 3; i++) {
-//            addressDAO.save(buildAddress());
-//        }
-//    }
-
-    @Test
-    public void notEmptyTableBeforeTestExecution() {
-        int recordsInDB = addressDAO.getAllRecordsCount();
-        Assertions.assertTrue(recordsInDB > 0, "The table is empty");
-    }
-
-    @Test
-    public void failTheTestIfTableIsEmpty() {
-        addressDAO.deleteAll();
-        int recordsInDB = addressDAO.getAllRecordsCount();
-        Assertions.assertThrows(NullPointerException.class, (Executable) addressDAO.getAllRecords());
+    @BeforeAll
+    public static void setUp() {
+       addressDAO.deleteAll();
+        for (int i = 0; i < 3; i++) {
+            addressDAO.save(buildAddress());
+        }
     }
 
     @Test
     public void randomCustomersWithAddressWithAllMandatoryFields() {
         Address address = addressDAO.getAddressByCustomerId(getRandomCustomerId());
-
         Assertions.assertNotNull(address.getAddress_id());
         Assertions.assertNotNull(address.getCustomer_id());
         Assertions.assertNotNull(address.getCity());
@@ -86,10 +72,23 @@ class AddressDAOTest {
         return address;
     }
 
+    @Test
+    public void notEmptyTableBeforeTestExecution() {
+        int recordsInDB = addressDAO.getAllRecordsCount();
+        Assertions.assertTrue(recordsInDB > 0, "The table is empty");
+    }
+
+    @Test
+    public void failTheTestIfTableIsEmpty() {
+        addressDAO.deleteAll();
+        int recordsInDB = addressDAO.getAllRecordsCount();
+        Assertions.assertThrows(NullPointerException.class, (Executable) addressDAO.getAllRecords());
+    }
+
     private static Address buildAddress() {
         Faker faker = new Faker();
         Address address = Address.builder()
-                .address_id(faker.number().numberBetween(1L, 5L))
+                .address_id(faker.number().numberBetween(6L,1000L))
                 .customer_id(faker.number().numberBetween(1L, 5L))
                 .address(faker.address().fullAddress())
                 .city(faker.address().city())
